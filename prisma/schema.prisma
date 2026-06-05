@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  password      String
+  role          Role           @default(MEMBER)
+  department    String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  workLogs      WorkLog[]
+  comments      Comment[]
+  absences      Absence[]
+  notifications Notification[]
+}
+
+model WorkLog {
+  id        String    @id @default(cuid())
+  date      String
+  content   String
+  status    LogStatus @default(DRAFT)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([userId, date])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  workLogId String
+  workLog   WorkLog  @relation(fields: [workLogId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Absence {
+  id     String      @id @default(cuid())
+  date   String
+  type   AbsenceType
+  note   String?
+  userId String
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum LogStatus {
+  DRAFT
+  SUBMITTED
+}
+
+enum AbsenceType {
+  FULL_DAY
+  HALF_DAY_AM
+  HALF_DAY_PM
+}

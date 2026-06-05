@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd \\\"C:/Users/user/OneDrive/문서/cdl/worklog-dashboard\\\" && npx tsc --noEmit 2>&1\",\"timeout\":60000,\"description\":\"TypeScript 타입 체크 재실행\"}",
+  "error": "Exit code 2\nscripts/seed.ts(4,16): error TS2554: Expected 1 arguments, but got 0.\r\nsrc/lib/prisma.ts(9,5): error TS2353: Object literal may only specify known properties, and 'datasourceUrl' does not exist in type 'Subset<PrismaClientOptions, PrismaClientOptions>'.",
+  "timestamp": "2026-06-05T11:12:35.897Z",
+  "retry_count": 1
+}
