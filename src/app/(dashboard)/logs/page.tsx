@@ -3,8 +3,7 @@
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { formatDate, formatDateTime } from '@/lib/utils'
-import { format, subDays } from 'date-fns'
+import { formatDate, formatDateTime, todayStr } from '@/lib/utils'
 
 interface User {
   id: string
@@ -128,7 +127,7 @@ export default function LogsPage() {
                   댓글 {log.comments.length}개
                 </span>
                 <div className="flex gap-2">
-                  {(log.user.id === session?.user.id || isAdmin) && (
+                  {(isAdmin || (log.user.id === session?.user.id && log.date === todayStr())) && (
                     <Link href={`/logs/edit/${log.id}`} className="text-xs text-gray-500 hover:text-gray-700">
                       수정
                     </Link>

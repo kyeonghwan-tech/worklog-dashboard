@@ -38,7 +38,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/logs', label: '업무일지', icon: '📋' },
     { href: '/logs/new', label: '일지 작성', icon: '✏️' },
     ...(session?.user.role === 'ADMIN'
-      ? [{ href: '/admin', label: '팀원 관리', icon: '👥' }]
+      ? [
+          { href: '/calendar', label: '캘린더', icon: '📅' },
+          { href: '/admin', label: '팀원 관리', icon: '👥' },
+        ]
       : []),
     { href: '/profile', label: '내 정보', icon: '👤' },
   ]

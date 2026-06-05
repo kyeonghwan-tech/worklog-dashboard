@@ -1,6 +1,13 @@
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { format, toZonedTime } from 'date-fns-tz'
+
+const KST = 'Asia/Seoul'
+
+function todayKST(): string {
+  return format(toZonedTime(new Date(), KST), 'yyyy-MM-dd')
+}
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
@@ -12,6 +19,14 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   if (log.userId !== session.user.id && session.user.role !== 'ADMIN') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
+  // 팀원은 당일에만 수정 가능 (팀장은 항상 가능)
+  if (session.user.role !== 'ADMIN' && log.date !== todayKST()) {
+    return NextResponse.json(
+      { error: '업무일지는 작성 당일에만 수정할 수 있습니다.' },
+      { status: 403 }
+    )
   }
 
   const { content, status } = await req.json()
