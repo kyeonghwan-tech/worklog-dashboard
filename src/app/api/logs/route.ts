@@ -9,10 +9,23 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const date = searchParams.get('date')
   const userId = searchParams.get('userId')
+  const startDate = searchParams.get('startDate')
+  const endDate = searchParams.get('endDate')
+
+  // 팀원은 본인 일지만 조회 가능
+  const isAdmin = session.user.role === 'ADMIN'
+  const targetUserId = !isAdmin ? session.user.id : userId || undefined
 
   const where: Record<string, unknown> = {}
-  if (date) where.date = date
-  if (userId) where.userId = userId
+  if (targetUserId) where.userId = targetUserId
+  if (date) {
+    where.date = date
+  } else if (startDate || endDate) {
+    where.date = {
+      ...(startDate ? { gte: startDate } : {}),
+      ...(endDate ? { lte: endDate } : {}),
+    }
+  }
 
   const logs = await prisma.workLog.findMany({
     where,
@@ -23,7 +36,7 @@ export async function GET(req: Request) {
         orderBy: { createdAt: 'asc' },
       },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
   })
   return NextResponse.json(logs)
 }
