@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react'
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
-import { formatDate, formatDateTime, todayStr } from '@/lib/utils'
+import { formatDate, formatDateTime } from '@/lib/utils'
 import { format, startOfMonth, endOfMonth, subMonths } from 'date-fns'
 
 interface User { id: string; name: string }
@@ -224,7 +224,7 @@ export default function LogsPage() {
                     <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
                       <span className="text-xs text-gray-400">댓글 {log.comments.length}개</span>
                       <div className="flex gap-3">
-                        {(isAdmin || (log.user.id === session?.user.id && log.date === todayStr())) && (
+                        {(isAdmin || log.user.id === session?.user.id) && (
                           <Link href={`/logs/edit/${log.id}`} className="text-xs text-gray-500 hover:text-gray-700">
                             수정
                           </Link>

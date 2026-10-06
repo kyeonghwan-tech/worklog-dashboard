@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { formatDate, formatDateTime, todayStr } from '@/lib/utils'
+import { formatDate, formatDateTime } from '@/lib/utils'
 
 interface User { id: string; name: string }
 interface Comment { id: string; content: string; user: User; createdAt: string }
@@ -55,7 +55,7 @@ export default function LogDetailPage() {
   if (!log) return <div className="text-center py-12 text-gray-400">불러오는 중...</div>
 
   const isAdmin = session?.user.role === 'ADMIN'
-  const canEdit = isAdmin || (log.user.id === session?.user.id && log.date === todayStr())
+  const canEdit = isAdmin || log.user.id === session?.user.id
 
   return (
     <div className="max-w-2xl space-y-5">
